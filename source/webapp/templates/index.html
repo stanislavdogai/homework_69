@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Title</title>
+</head>
+<body>
+<div class="main-block">
+    <div class="input"><input id="num1" type="text" placeholder="Number A"></div>
+        <div class="buttons">
+        <button id="btn" onclick="math(event)" data-article-url="{% url 'webapp:add' %}">add</button>
+        <button id="btn" onclick="math(event)" data-article-url="{% url 'webapp:subtract' %}">subtract</button>
+        <button id="btn" onclick="math(event)" data-article-url="{% url 'webapp:multiply' %}">multiply</button>
+        <button id="btn" onclick="math(event)" data-article-url="{% url 'webapp:divide' %}">divide</button>
+        </div>
+    <div class="input"><input id="num2" type="text" placeholder="Number B"></div>
+</div>
+{#{% url 'webapp:add' %}#}
+
+<script>
+async function makeRequest(url, method) {
+    let response = await fetch(url, method);
+    if (response.ok) {
+        return await response.json();
+    } else {
+        let error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+    }
+}
+
+let math = async function (event){
+    let url = event.target.dataset.articleUrl;
+    let num1 = document.getElementById('num1').value;
+    let num2 = document.getElementById('num2').value;
+    let info = {
+        'num1' : num1,
+        'num2' : num2,
+    };
+    if (document.getElementById('answer')){
+        block = document.getElementById('answer')
+        block.remove()
+    }
+    let csrf = await makeRequest('http://localhost:8000/csrftoken/');
+    let csrf_token = document.cookie.split('=')[1];
+    let data = await makeRequest(url, {method: 'POST',
+                                        body: JSON.stringify(info),
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRFToken': csrf_token}
+                                        });
+    console.log('data', data)
+    let div = document.createElement('div');
+    div.classList.add('answer');
+    div.id = 'answer';
+    let p = document.createElement('p');
+
+    if (data['answer']){
+        p.innerText = `${data.answer}`;
+        div.style.backgroundColor = 'green'
+        p.style.color = 'white'
+    }
+    else{
+        p.innerText = `${data.error}`;
+        div.style.backgroundColor = 'red'
+        p.style.color = 'white'
+        p.style.fontSize = '25px'
+    }
+    div.appendChild(p)
+    document.body.appendChild(div)
+}
+</script>
+</body>
+</html>
