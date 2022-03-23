@@ -54,14 +54,16 @@ let math = async function (event){
                                             'Content-Type': 'application/json',
                                             'X-CSRFToken': csrf_token}
                                         });
-    console.log('data', data)
+    if (data['answer'] == 0){
+        data['answer'] = '0'
+    }
     let div = document.createElement('div');
     div.classList.add('answer');
     div.id = 'answer';
     let p = document.createElement('p');
 
     if (data['answer']){
-        p.innerText = `${data.answer}`;
+        p.innerText = `${num1} ${data.element} ${num2} = ${data.answer}`;
         div.style.backgroundColor = 'green'
         p.style.color = 'white'
     }
@@ -73,6 +75,11 @@ let math = async function (event){
     }
     div.appendChild(p)
     document.body.appendChild(div)
+    let inputs = document.querySelectorAll('input[type=text]');
+
+    for (let i = 0;  i < inputs.length; i++) {
+    inputs[i].value = '';
+    };
 }
 </script>
 </body>
