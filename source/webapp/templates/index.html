@@ -30,7 +30,8 @@ async function makeRequest(url, method) {
     } else {
         let error = new Error(response.statusText);
         error.response = response;
-        throw error;
+        err_response = await response.json()
+        return err_response
     }
 }
 
@@ -54,7 +55,7 @@ let math = async function (event){
                                             'Content-Type': 'application/json',
                                             'X-CSRFToken': csrf_token}
                                         });
-    if (data['answer'] == 0){
+    if (data['answer'] == 0) {
         data['answer'] = '0'
     }
     let div = document.createElement('div');

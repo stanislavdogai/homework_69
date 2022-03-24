@@ -13,40 +13,38 @@ def get_token_view(request, *args, **kwargs):
 
 def add(request):
     data = json.loads(request.body)
-    if data['num1'].isdigit() and data['num2'].isdigit():
+    try:
         total = int(data['num1']) + int(data['num2'])
         return JsonResponse({'answer': total, 'element' : '+'})
-    else:
+    except ValueError:
         return JsonResponse({'error': 'input only numbers'}, status=400)
 
 def subtract(request):
     data = json.loads(request.body)
-    if data['num1'].isdigit() and data['num2'].isdigit():
+    try:
         total = int(data['num1']) - int(data['num2'])
-        print(total)
         return JsonResponse({'answer': total, 'element' : '-'})
-    else:
-        return JsonResponse({'error': 'input only numbers'})
+    except ValueError:
+        return JsonResponse({'error': 'input only numbers'}, status=400)
 
 def multiply(request):
-    if request.body:
-        data = json.loads(request.body)
-        if data['num1'].isdigit() and data['num2'].isdigit():
-            total = int(data['num1']) * int(data['num2'])
-            return JsonResponse({'answer': total, 'element' : '*'})
-        else:
-            return JsonResponse({'error': 'input only numbers'})
+    data = json.loads(request.body)
+    try:
+        total = int(data['num1']) * int(data['num2'])
+        return JsonResponse({'answer': total, 'element' : '*'})
+    except ValueError:
+        return JsonResponse({'error': 'input only numbers'}, status=400)
 
 def divide(request):
     data = json.loads(request.body)
-    if data['num1'].isdigit() and data['num2'].isdigit():
+    try:
         if int(data['num1']) == 0 or int(data['num2']) == 0:
-            return JsonResponse({'error': 'division by zero!'})
+            return JsonResponse({'error': 'division by zero!'}, status=400)
         else:
             total = int(data['num1']) / int(data['num2'])
             return JsonResponse({'answer': total, 'element' : '/'})
-    else:
-        return JsonResponse({'error': 'input only numbers'})
+    except ValueError:
+        return JsonResponse({'error': 'input only numbers'}, status=400)
 
 def math_logic(request):
     return render(request, 'index.html')
