@@ -15,7 +15,7 @@ def add(request):
     data = json.loads(request.body)
     try:
         total = int(data['num1']) + int(data['num2'])
-        return JsonResponse({'answer': total, 'element' : '+'})
+        return JsonResponse({'answer': str(total), 'element' : '+'})
     except ValueError:
         return JsonResponse({'error': 'input only numbers'}, status=400)
 
@@ -23,7 +23,7 @@ def subtract(request):
     data = json.loads(request.body)
     try:
         total = int(data['num1']) - int(data['num2'])
-        return JsonResponse({'answer': total, 'element' : '-'})
+        return JsonResponse({'answer': str(total), 'element' : '-'})
     except ValueError:
         return JsonResponse({'error': 'input only numbers'}, status=400)
 
@@ -31,7 +31,7 @@ def multiply(request):
     data = json.loads(request.body)
     try:
         total = int(data['num1']) * int(data['num2'])
-        return JsonResponse({'answer': total, 'element' : '*'})
+        return JsonResponse({'answer': str(total), 'element' : '*'})
     except ValueError:
         return JsonResponse({'error': 'input only numbers'}, status=400)
 
@@ -42,7 +42,7 @@ def divide(request):
             return JsonResponse({'error': 'division by zero!'}, status=400)
         else:
             total = int(data['num1']) / int(data['num2'])
-            return JsonResponse({'answer': total, 'element' : '/'})
+            return JsonResponse({'answer': str(total), 'element' : '/'})
     except ValueError:
         return JsonResponse({'error': 'input only numbers'}, status=400)
 
